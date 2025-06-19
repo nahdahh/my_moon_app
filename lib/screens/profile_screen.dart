@@ -25,18 +25,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Uint8List? _imageBytes;
   String? _imageName;
   bool _isLoading = false;
-  
+
   String _userName = 'User';
   String _userEmail = 'user@example.com';
   String? _userBirthDate;
   String? _profileImageUrl;
-  
+
   @override
   void initState() {
     super.initState();
     _loadUserData();
   }
-  
+
   void _loadUserData() {
     final user = _authService.getCurrentUser();
     if (user != null) {
@@ -61,7 +61,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       });
     }
   }
-  
+
   Future<void> _pickImage() async {
     try {
       final XFile? pickedFile = await _picker.pickImage(
@@ -90,7 +90,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       );
     }
   }
-  
+
   Future<void> _updateProfileImage() async {
     if (_imageBytes == null || _imageName == null) return;
     
@@ -130,7 +130,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       });
     }
   }
-  
+
   void _showLogoutConfirmation() {
     showDialog(
       context: context,
@@ -192,7 +192,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       },
     );
   }
-  
+
   void _logout() {
     _authService.logout();
     Navigator.pushAndRemoveUntil(
@@ -211,30 +211,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Column(
             children: [
+              // Ganti header yang ada dengan struktur 3 kolom
               // Header
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20.0),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Expanded(
-                      child: Center(
-                        child: Text(
-                          'Profile',
-                          style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontSize: 24,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xFF000000),
-                          ),
+                    // Left: Empty placeholder
+                    const SizedBox(width: 48),
+                    
+                    // Center: Profile text
+                    Expanded(
+                      child: Text(
+                        'Profile',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 23,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFF000000),
                         ),
                       ),
                     ),
+                    
+                    // Right: Notification icon
                     IconButton(
                       icon: const Icon(
                         Icons.notifications_outlined,
-                        color: Color(0xFF000000), // Ubah dari Color(0xFFFF2D55) ke hitam
-                        size: 24,
+                        color: Color(0xFF000000),
+                        size: 28,
                       ),
                       onPressed: () {
                         Navigator.push(
@@ -451,7 +456,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
-  
+
   Widget _buildMenuItem({
     required IconData icon,
     required String title,

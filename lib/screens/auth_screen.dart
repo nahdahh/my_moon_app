@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_moon/screens/welcome_screen.dart';
 import 'package:my_moon/widgets/social_login_button.dart';
-import 'package:my_moon/widgets/custom_text_field.dart';
 import 'package:my_moon/services/auth_service.dart';
 import 'package:intl/intl.dart';
 
@@ -268,101 +267,121 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
             ),
             const SizedBox(height: 30),
             // Username field with very rounded corners
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey.shade300),
-                borderRadius: BorderRadius.circular(30),
-                color: Colors.white,
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: TextField(
-                controller: _nameController,
-                decoration: const InputDecoration(
-                  hintText: 'Username',
-                  prefixIcon: Icon(
-                    Icons.person_outline,
-                    color: Color(0xFFFF4D6D),
-                  ),
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(vertical: 16),
-                  hintStyle: TextStyle(color: Colors.grey),
+            TextField(
+              controller: _nameController,
+              decoration: InputDecoration(
+                hintText: 'Username',
+                prefixIcon: const Icon(
+                  Icons.person_outline,
+                  color: Color(0xFFFF4D6D),
                 ),
+                filled: true,
+                fillColor: Colors.white,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  borderSide: BorderSide(color: Colors.grey.shade300),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  borderSide: BorderSide(color: Colors.grey.shade300),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  borderSide: const BorderSide(color: Color(0xFFFF4D6D), width: 2),
+                ),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                hintStyle: const TextStyle(color: Colors.grey),
               ),
             ),
             const SizedBox(height: 16),
             // Email field with very rounded corners
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey.shade300),
-                borderRadius: BorderRadius.circular(30),
-                color: Colors.white,
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: TextField(
-                controller: _emailController,
-                keyboardType: TextInputType.emailAddress,
-                decoration: const InputDecoration(
-                  hintText: 'Email',
-                  prefixIcon: Icon(
-                    Icons.email_outlined,
-                    color: Color(0xFFFF4D6D),
-                  ),
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(vertical: 16),
-                  hintStyle: TextStyle(color: Colors.grey),
+            TextField(
+              controller: _emailController,
+              keyboardType: TextInputType.emailAddress,
+              decoration: InputDecoration(
+                hintText: 'Email',
+                prefixIcon: const Icon(
+                  Icons.email_outlined,
+                  color: Color(0xFFFF4D6D),
                 ),
+                filled: true,
+                fillColor: Colors.white,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  borderSide: BorderSide(color: Colors.grey.shade300),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  borderSide: BorderSide(color: Colors.grey.shade300),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  borderSide: const BorderSide(color: Color(0xFFFF4D6D), width: 2),
+                ),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                hintStyle: const TextStyle(color: Colors.grey),
               ),
             ),
             const SizedBox(height: 16),
             // Birth date field with very rounded corners
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey.shade300),
-                borderRadius: BorderRadius.circular(30),
-                color: Colors.white,
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: GestureDetector(
-                onTap: () => _selectDate(context),
-                child: AbsorbPointer(
-                  child: TextField(
-                    controller: _birthDateController,
-                    decoration: const InputDecoration(
-                      hintText: 'Birth Date',
-                      prefixIcon: Icon(
-                        Icons.calendar_today_outlined,
-                        color: Color(0xFFFF4D6D),
-                      ),
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(vertical: 16),
-                      hintStyle: TextStyle(color: Colors.grey),
+            GestureDetector(
+              onTap: () => _selectDate(context),
+              child: AbsorbPointer(
+                child: TextField(
+                  controller: _birthDateController,
+                  decoration: InputDecoration(
+                    hintText: 'Birth Date',
+                    prefixIcon: const Icon(
+                      Icons.calendar_today_outlined,
+                      color: Color(0xFFFF4D6D),
                     ),
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide: BorderSide(color: Colors.grey.shade300),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide: BorderSide(color: Colors.grey.shade300),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide: const BorderSide(color: Color(0xFFFF4D6D), width: 2),
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                    hintStyle: const TextStyle(color: Colors.grey),
                   ),
                 ),
               ),
             ),
             const SizedBox(height: 16),
-            // Password field with very rounded corners
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey.shade300),
-                borderRadius: BorderRadius.circular(30),
-                color: Colors.white,
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: TextField(
-                controller: _passwordController,
-                obscureText: true,
-                decoration: const InputDecoration(
-                  hintText: 'Password',
-                  prefixIcon: Icon(
-                    Icons.lock_outline,
-                    color: Color(0xFFFF4D6D),
-                  ),
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(vertical: 16),
-                  hintStyle: TextStyle(color: Colors.grey),
+            // Password field with rounded corners
+            TextField(
+              controller: _passwordController,
+              obscureText: true,
+              decoration: InputDecoration(
+                hintText: 'Password',
+                prefixIcon: const Icon(
+                  Icons.lock_outline,
+                  color: Color(0xFFFF4D6D),
                 ),
+                filled: true,
+                fillColor: Colors.white,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  borderSide: BorderSide(color: Colors.grey.shade300),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  borderSide: BorderSide(color: Colors.grey.shade300),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  borderSide: const BorderSide(color: Color(0xFFFF4D6D), width: 2),
+                ),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                hintStyle: const TextStyle(color: Colors.grey),
               ),
             ),
             
@@ -489,50 +508,60 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
             ),
             const SizedBox(height: 30),
             // Email field with very rounded corners
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey.shade300),
-                borderRadius: BorderRadius.circular(30),
-                color: Colors.white,
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: TextField(
-                controller: _loginEmailController,
-                keyboardType: TextInputType.emailAddress,
-                decoration: const InputDecoration(
-                  hintText: 'Email',
-                  prefixIcon: Icon(
-                    Icons.email_outlined,
-                    color: Color(0xFFFF4D6D),
-                  ),
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(vertical: 16),
-                  hintStyle: TextStyle(color: Colors.grey),
+            TextField(
+              controller: _loginEmailController,
+              keyboardType: TextInputType.emailAddress,
+              decoration: InputDecoration(
+                hintText: 'Email',
+                prefixIcon: const Icon(
+                  Icons.email_outlined,
+                  color: Color(0xFFFF4D6D),
                 ),
+                filled: true,
+                fillColor: Colors.white,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  borderSide: BorderSide(color: Colors.grey.shade300),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  borderSide: BorderSide(color: Colors.grey.shade300),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  borderSide: const BorderSide(color: Color(0xFFFF4D6D), width: 2),
+                ),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                hintStyle: const TextStyle(color: Colors.grey),
               ),
             ),
             const SizedBox(height: 16),
             // Password field with very rounded corners
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey.shade300),
-                borderRadius: BorderRadius.circular(30),
-                color: Colors.white,
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: TextField(
-                controller: _loginPasswordController,
-                obscureText: true,
-                decoration: const InputDecoration(
-                  hintText: 'Password',
-                  prefixIcon: Icon(
-                    Icons.lock_outline,
-                    color: Color(0xFFFF4D6D),
-                  ),
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(vertical: 16),
-                  hintStyle: TextStyle(color: Colors.grey),
+            TextField(
+              controller: _loginPasswordController,
+              obscureText: true,
+              decoration: InputDecoration(
+                hintText: 'Password',
+                prefixIcon: const Icon(
+                  Icons.lock_outline,
+                  color: Color(0xFFFF4D6D),
                 ),
+                filled: true,
+                fillColor: Colors.white,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  borderSide: BorderSide(color: Colors.grey.shade300),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  borderSide: BorderSide(color: Colors.grey.shade300),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30),
+                  borderSide: const BorderSide(color: Color(0xFFFF4D6D), width: 2),
+                ),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                hintStyle: const TextStyle(color: Colors.grey),
               ),
             ),
             

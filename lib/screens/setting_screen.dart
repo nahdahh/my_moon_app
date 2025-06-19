@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_moon/services/auth_service.dart';
+import 'package:my_moon/screens/notification_settings_screen.dart';
 import 'package:intl/intl.dart';
 
 class SettingScreen extends StatefulWidget {
@@ -11,17 +12,17 @@ class SettingScreen extends StatefulWidget {
 
 class _SettingScreenState extends State<SettingScreen> {
   final AuthService _authService = AuthService();
-  
+
   String _userName = 'User';
   String _userEmail = 'user@example.com';
   String? _userBirthDate;
-  
+
   @override
   void initState() {
     super.initState();
     _loadUserData();
   }
-  
+
   void _loadUserData() {
     final user = _authService.getCurrentUser();
     if (user != null && mounted) {
@@ -32,7 +33,7 @@ class _SettingScreenState extends State<SettingScreen> {
       });
     }
   }
-  
+
   void _showEditProfileDialog() {
     showDialog(
       context: context,
@@ -127,6 +128,21 @@ class _SettingScreenState extends State<SettingScreen> {
                         title: 'Change Password',
                         onTap: _showChangePasswordDialog,
                       ),
+                      const SizedBox(height: 16),
+                      
+                      // Notification Settings Menu
+                      _buildMenuItem(
+                        icon: Icons.notifications_outlined,
+                        title: 'Notification Settings',
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const NotificationSettingsScreen(),
+                            ),
+                          );
+                        },
+                      ),
                       
                       const SizedBox(height: 32),
                     ],
@@ -139,7 +155,7 @@ class _SettingScreenState extends State<SettingScreen> {
       ),
     );
   }
-  
+
   Widget _buildMenuItem({
     required IconData icon,
     required String title,
@@ -191,6 +207,7 @@ class _SettingScreenState extends State<SettingScreen> {
   }
 }
 
+// Keep the existing dialog classes (_EditProfileDialog and _ChangePasswordDialog) unchanged
 class _EditProfileDialog extends StatefulWidget {
   final String initialName;
   final String initialEmail;

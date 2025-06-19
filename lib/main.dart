@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:my_moon/screens/onboarding_screen.dart';
+import 'package:my_moon/services/notification_service.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize notification service
+  await NotificationService().initialize();
+  
   runApp(const MyApp());
 }
 

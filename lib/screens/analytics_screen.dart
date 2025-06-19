@@ -48,40 +48,66 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF7FD), // Updated background color
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: const Text(
-          'Analitic',
-          style: TextStyle(
-            color: Colors.black,
-            fontFamily: 'Poppins',
-            fontWeight: FontWeight.bold,
-            fontSize: 24,
-          ),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications_outlined, color: Colors.black),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const NotificationScreen()),
-              );
-            },
-          ),
-        ],
-      ),
+      backgroundColor: const Color(0xFFFFF7FD),
+      appBar: null,
       body: _isLoading
           ? const Center(
               child: CircularProgressIndicator(
                 color: Color(0xFFFF4D6D),
               ),
             )
-          : _analyticsData == null || !_analyticsData!.hasEnoughData
-              ? _buildInsufficientDataView()
-              : _buildAnalyticsView(),
+          : Column(
+        children: [
+          // Header with 3-column layout
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+              child: Row(
+                children: [
+                  // Left: Empty placeholder
+                  const SizedBox(width: 48),
+                  
+                  // Center: Analytics text
+                  Expanded(
+                    child: Text(
+                      'Analitic',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 23,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                  
+                  // Right: Notification icon
+                  IconButton(
+                    icon: const Icon(
+                      Icons.notifications_outlined,
+                      size: 28,
+                      color: Colors.black,
+                    ),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const NotificationScreen()),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+          
+          // Content
+          Expanded(
+            child: _analyticsData == null || !_analyticsData!.hasEnoughData
+                ? _buildInsufficientDataView()
+                : _buildAnalyticsView(),
+          ),
+        ],
+      ),
       bottomNavigationBar: const BottomNavBar(currentIndex: 2),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -159,101 +185,127 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     
     return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.all(20.0),
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // My Siklus Section
-            const Text(
-              'My Siklus',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
+            const SizedBox(height: 8),
+            
+            // My Siklus Section with Cards in White Container
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // My Siklus Title
+                  const Text(
+                    'My Siklus',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  
+                  // Cards Row
+                  Row(
+                    children: [
+                      // Average Period Card
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: const Color(0xF3678A).withOpacity(0.56), // #F3678A with 56% transparency
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Icon(
+                                Icons.water_drop,
+                                color: const Color(0xFFD91E5B),
+                                size: 24,
+                              ),
+                              const SizedBox(height: 12),
+                              Text(
+                                '${data.averagePeriodLength} Days',
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              const Text(
+                                'average period',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      
+                      const SizedBox(width: 16),
+                      
+                      // Average Cycle Card
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFE7E7FF), // #E7E7FF
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Icon(
+                                Icons.refresh,
+                                color: const Color(0xFF6B6BFF),
+                                size: 24,
+                              ),
+                              const SizedBox(height: 12),
+                              Text(
+                                '${data.averageCycleLength} Days',
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF4A4A4A),
+                                ),
+                              ),
+                              const Text(
+                                'average cycle',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w400,
+                                  color: Color(0xFF6B6B6B),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 16),
             
-            Row(
-              children: [
-                // Average Period Card
-                Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: Colors.pink[200],
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Icon(
-                          Icons.water_drop,
-                          color: Colors.pink[600],
-                          size: 24,
-                        ),
-                        const SizedBox(height: 12),
-                        Text(
-                          '${data.averagePeriodLength} Days',
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                        const Text(
-                          'average period',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                
-                const SizedBox(width: 16),
-                
-                // Average Cycle Card
-                Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Icon(
-                          Icons.refresh,
-                          color: Colors.grey[600],
-                          size: 24,
-                        ),
-                        const SizedBox(height: 12),
-                        Text(
-                          '${data.averageCycleLength} Days',
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
-                        ),
-                        const Text(
-                          'average cycle',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.black54,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            
-            const SizedBox(height: 32),
+            const SizedBox(height: 12), // Reduced from 16 to 12
             
             // Cycle History Section
             Row(
@@ -264,36 +316,38 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
+                    color: Colors.black,
                   ),
                 ),
                 Icon(
-                  Icons.chevron_right,
+                  Icons.arrow_forward,
                   color: Colors.grey[600],
+                  size: 20,
                 ),
               ],
             ),
             
-            const SizedBox(height: 8),
-            
             Text(
-              'Average Cycle Length over the Last ${data.cycleHistory.length} Cycles:',
+              'Average Cycle Length over the Last Six Months',
               style: TextStyle(
                 fontSize: 14,
+                fontWeight: FontWeight.w400,
                 color: Colors.grey[600],
               ),
             ),
             
-            const SizedBox(height: 4),
+            const SizedBox(height: 4), // Reduced from 8 to 4
             
             Text(
               '${data.averageCycleLength} ${_analyticsService.calculateCycleLengthVariation(data.cycleHistory)}',
               style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
+                color: Colors.black,
               ),
             ),
             
-            const SizedBox(height: 24),
+            const SizedBox(height: 4), // Reduced from 8 to 4
             
             // Chart
             if (data.cycleHistory.isNotEmpty) _buildCycleChart(data.cycleHistory),
@@ -308,6 +362,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
             // Mood & Symptom Summary
             if (data.moodSummary.isNotEmpty || data.symptomSummary.isNotEmpty)
               _buildMoodSymptomSummary(data),
+              
+            const SizedBox(height: 20),
           ],
         ),
       ),
@@ -320,7 +376,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     final chartHeight = 200.0;
     
     return Container(
-      height: chartHeight + 100, // Extra space for labels
+      height: chartHeight + 60, // Reduced from 80 to 60
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -372,20 +428,20 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
               children: [
                 // Status text above bar
                 Container(
-                  height: 40,
+                  height: 28, // Reduced from 35 to 28
                   padding: const EdgeInsets.symmetric(horizontal: 2),
                   child: Text(
                     statusText,
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: 10,
+                      fontSize: 9, // Reduced from 10 to 9
                       color: isCurrentCycle ? const Color(0xFFFF1493) : Colors.grey[600],
                       fontWeight: isCurrentCycle ? FontWeight.bold : FontWeight.w500,
                     ),
                   ),
                 ),
                 
-                const SizedBox(height: 4),
+                // No SizedBox here - removed the gap
                 
                 // Cycle length bar with dashed border for current cycle
                 Container(
@@ -464,7 +520,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                       ),
                 ),
                 
-                const SizedBox(height: 8),
+                const SizedBox(height: 6), // Reduced from 8 to 6
                 
                 // Date label (MM.DD format for menstruation start date)
                 Text(

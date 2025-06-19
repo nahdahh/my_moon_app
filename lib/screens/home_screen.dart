@@ -189,19 +189,27 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       const SizedBox(height: 16),
                       
-                      // Header
+                      // Header with 3-column layout
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            'Hello, $_userName',
-                            style: const TextStyle(
-                              fontFamily: 'Poppins',
-                              fontSize: 24, // H1: 24px
-                              fontWeight: FontWeight.w600, // semi-bold
-                              color: Colors.black,
+                          // Left: Empty placeholder
+                          const SizedBox(width: 48), // Same width as IconButton to balance
+                          
+                          // Center: Hello text
+                          Expanded(
+                            child: Text(
+                              'Hello, $_userName',
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: 23, // Same as Calendar
+                                fontWeight: FontWeight.w600, // semi-bold
+                                color: Colors.black,
+                              ),
                             ),
                           ),
+                          
+                          // Right: Notification icon (bukan profile icon)
                           IconButton(
                             icon: const Icon(
                               Icons.notifications_outlined, 
