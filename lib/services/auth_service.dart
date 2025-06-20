@@ -3,10 +3,83 @@ import 'dart:convert';
 import 'package:pocketbase/pocketbase.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart' as path;
+import 'package:shared_preferences/shared_preferences.dart';
 
 final pb = PocketBase('http://127.0.0.1:8090');
 
 class AuthService {
+  static const String _tokenKey = 'auth_token';
+  static const String _userDataKey = 'user_data';
+  static const String _isLoggedInKey = 'is_logged_in';
+
+  /// Initialize auth service and restore session if available
+  Future<void> initializeAuth() async {
+    try {
+      print("Initializing auth service...");
+      
+      final prefs = await SharedPreferences.getInstance();
+      final savedToken = prefs.getString(_tokenKey);
+      final savedUserData = prefs.getString(_userDataKey);
+      final wasLoggedIn = prefs.getBool(_isLoggedInKey) ?? false;
+      
+      print("Saved token exists: ${savedToken != null}");
+      print("Saved user data exists: ${savedUserData != null}");
+      print("Was logged in: $wasLoggedIn");
+      
+      if (savedToken != null && savedUserData != null && wasLoggedIn) {
+        try {
+          // Restore auth state manually
+          pb.authStore.save(savedToken, jsonDecode(savedUserData));
+          print("Auth state restored from SharedPreferences");
+          
+          // Verify the token is still valid by trying to refresh
+          await pb.collection('users').authRefresh();
+          print("Token verified and refreshed successfully");
+          
+        } catch (e) {
+          print("Failed to restore or verify auth state: $e");
+          // Clear invalid data
+          await _clearAuthData();
+        }
+      } else {
+        print("No valid auth data found in SharedPreferences");
+      }
+      
+      // Log current auth state
+      print("Current auth state - Valid: ${pb.authStore.isValid}, Token: ${pb.authStore.token.isNotEmpty}");
+      
+    } catch (e) {
+      print("Error initializing auth: $e");
+    }
+  }
+
+  /// Save auth data to SharedPreferences
+  Future<void> _saveAuthData() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(_tokenKey, pb.authStore.token);
+      await prefs.setString(_userDataKey, jsonEncode(pb.authStore.model?.toJson() ?? {}));
+      await prefs.setBool(_isLoggedInKey, true);
+      print("Auth data saved to SharedPreferences");
+    } catch (e) {
+      print("Error saving auth data: $e");
+    }
+  }
+
+  /// Clear auth data from SharedPreferences
+  Future<void> _clearAuthData() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove(_tokenKey);
+      await prefs.remove(_userDataKey);
+      await prefs.setBool(_isLoggedInKey, false);
+      pb.authStore.clear();
+      print("Auth data cleared from SharedPreferences");
+    } catch (e) {
+      print("Error clearing auth data: $e");
+    }
+  }
+
   /// Register a new user
   Future<bool> register({
     required String name,
@@ -28,10 +101,9 @@ class AuthService {
       
       // After registration, log in automatically
       print("Registration successful, attempting to login");
-      await pb.collection('users').authWithPassword(email, password);
+      final loginSuccess = await login(email: email, password: password);
       
-      print("Login successful after registration");
-      return true;
+      return loginSuccess;
     } catch (e) {
       print("Register error: $e");
       return false;
@@ -46,8 +118,11 @@ class AuthService {
     try {
       print("Attempting to login with email: $email");
       
-      // Tambahkan timeout untuk mencegah hanging
-      final result = await pb.collection('users').authWithPassword(
+      // Clear any existing auth data first
+      pb.authStore.clear();
+      
+      // Attempt login with timeout
+      await pb.collection('users').authWithPassword(
         email, 
         password
       ).timeout(
@@ -58,19 +133,26 @@ class AuthService {
       );
       
       print("Login successful. Auth valid: ${pb.authStore.isValid}");
-      print("User ID: ${pb.authStore.model.id}");
+      print("User ID: ${pb.authStore.model?.id}");
+      print("Token length: ${pb.authStore.token.length}");
       
-      // Verifikasi bahwa token benar-benar disimpan
-      if (!pb.authStore.isValid) {
+      // Verify that token is properly set
+      if (!pb.authStore.isValid || pb.authStore.token.isEmpty) {
         print("Warning: Auth store is not valid after successful login");
         return false;
       }
+      
+      // Save auth data to SharedPreferences for persistence
+      await _saveAuthData();
       
       return true;
     } catch (e) {
       print("Login error: $e");
       
-      // Berikan informasi error yang lebih detail
+      // Clear any partial auth data on error
+      await _clearAuthData();
+      
+      // Provide detailed error information
       if (e.toString().contains("Failed to authenticate")) {
         print("Authentication failed - incorrect email or password");
       } else if (e.toString().contains("timeout")) {
@@ -84,16 +166,43 @@ class AuthService {
   }
 
   /// Logout user
-  void logout() {
+  Future<void> logout() async {
     print("Logging out user");
-    pb.authStore.clear();
+    await _clearAuthData();
   }
 
-  /// Check if user is logged in
+  /// Check if user is logged in with detailed logging
   bool isLoggedIn() {
     final isValid = pb.authStore.isValid;
-    print("Checking if user is logged in: $isValid");
-    return isValid;
+    final hasToken = pb.authStore.token.isNotEmpty;
+    final hasModel = pb.authStore.model != null;
+    
+    print("=== Auth Status Check ===");
+    print("Auth valid: $isValid");
+    print("Has token: $hasToken");
+    print("Token: ${pb.authStore.token.substring(0, pb.authStore.token.length > 20 ? 20 : pb.authStore.token.length)}...");
+    print("Has model: $hasModel");
+    print("Model ID: ${pb.authStore.model?.id}");
+    print("========================");
+    
+    return isValid && hasToken && hasModel;
+  }
+
+  /// Check login status from SharedPreferences as backup
+  Future<bool> isLoggedInFromStorage() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final wasLoggedIn = prefs.getBool(_isLoggedInKey) ?? false;
+      final hasToken = prefs.getString(_tokenKey) != null;
+      final hasUserData = prefs.getString(_userDataKey) != null;
+      
+      print("Storage check - Was logged in: $wasLoggedIn, Has token: $hasToken, Has user data: $hasUserData");
+      
+      return wasLoggedIn && hasToken && hasUserData;
+    } catch (e) {
+      print("Error checking login status from storage: $e");
+      return false;
+    }
   }
 
   /// Get current user data
@@ -103,6 +212,34 @@ class AuthService {
       return null;
     }
     return pb.authStore.model;
+  }
+
+  /// Refresh authentication token with better error handling
+  Future<bool> refreshAuth() async {
+    try {
+      print("Attempting to refresh auth token...");
+      
+      // Check if we have a token to refresh
+      if (pb.authStore.token.isEmpty) {
+        print("No token available to refresh");
+        return false;
+      }
+      
+      await pb.collection('users').authRefresh();
+      print("Auth token refreshed successfully");
+      
+      // Save the refreshed auth data
+      await _saveAuthData();
+      
+      return true;
+    } catch (e) {
+      print("Failed to refresh auth token: $e");
+      
+      // Clear invalid auth data
+      await _clearAuthData();
+      
+      return false;
+    }
   }
 
   /// Update profile info - IMPROVED VERSION
@@ -122,11 +259,10 @@ class AuthService {
       // Ensure PocketBase is authenticated
       if (!pb.authStore.isValid) {
         print("Auth store is not valid, attempting to refresh");
-        try {
-          await pb.collection('users').authRefresh();
-        } catch (e) {
-          print("Failed to refresh auth: $e");
-          // Continue anyway, as we might still be able to update the profile
+        final refreshSuccess = await refreshAuth();
+        if (!refreshSuccess) {
+          print("Failed to refresh auth for profile update");
+          return false;
         }
       }
 
@@ -183,12 +319,7 @@ class AuthService {
           }
           
           // Refresh auth store to get updated user data
-          try {
-            await pb.collection('users').authRefresh();
-          } catch (e) {
-            print("Failed to refresh auth after profile update: $e");
-            // Continue anyway, as the profile was updated
-          }
+          await refreshAuth();
           return true;
         } catch (e) {
           print("Error uploading file: $e");
@@ -201,13 +332,8 @@ class AuthService {
           await pb.collection('users').update(currentUser.id, body: formData);
           
           // Refresh auth store to get updated user data
-          try {
-            await pb.collection('users').authRefresh();
-            print("Profile updated and auth refreshed successfully");
-          } catch (e) {
-            print("Failed to refresh auth after profile update: $e");
-            // Continue anyway, as the profile was updated
-          }
+          await refreshAuth();
+          print("Profile updated and auth refreshed successfully");
           
           return true;
         } catch (e) {
@@ -239,11 +365,10 @@ class AuthService {
       // Ensure PocketBase is authenticated
       if (!pb.authStore.isValid) {
         print("Auth store is not valid, attempting to refresh");
-        try {
-          await pb.collection('users').authRefresh();
-        } catch (e) {
-          print("Failed to refresh auth: $e");
-          // Continue anyway, as we might still be able to update the profile photo
+        final refreshSuccess = await refreshAuth();
+        if (!refreshSuccess) {
+          print("Failed to refresh auth for profile photo update");
+          return false;
         }
       }
       
@@ -280,12 +405,7 @@ class AuthService {
       }
       
       // Refresh auth store to get updated user data
-      try {
-        await pb.collection('users').authRefresh();
-      } catch (e) {
-        print("Failed to refresh auth after profile photo update: $e");
-        // Continue anyway, as the profile photo was updated
-      }
+      await refreshAuth();
       return true;
     } catch (e) {
       print("Update profile photo error: $e");
@@ -341,12 +461,7 @@ class AuthService {
         print("Password updated successfully");
         
         // Refresh auth to ensure the session remains valid
-        try {
-          await pb.collection('users').authRefresh();
-        } catch (e) {
-          print("Failed to refresh auth after password update: $e");
-          // Continue anyway, as the password was updated
-        }
+        await refreshAuth();
         
         return true;
       } catch (e) {

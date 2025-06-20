@@ -1,8 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:my_moon/screens/initialization_screen_1.dart';
+import 'package:my_moon/services/navigation_service.dart';
 
-class WelcomeScreen extends StatelessWidget {
+class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({Key? key}) : super(key: key);
+
+  @override
+  State<WelcomeScreen> createState() => _WelcomeScreenState();
+}
+
+class _WelcomeScreenState extends State<WelcomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Save current route when this screen is loaded
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      NavigationService.saveCurrentRoute('/welcome');
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,9 +70,10 @@ class WelcomeScreen extends StatelessWidget {
                     ElevatedButton(
                       onPressed: () {
                         // Navigate to the first initialization screen
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const InitializationScreen1()),
+                        NavigationService.pushAndSave(
+                          context, 
+                          const InitializationScreen1(), 
+                          '/initialization1'
                         );
                       },
                       child: const SizedBox(

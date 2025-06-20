@@ -3,6 +3,7 @@ import 'package:my_moon/screens/home_screen.dart';
 import 'package:my_moon/screens/calendar_screen.dart';
 import 'package:my_moon/screens/profile_screen.dart';
 import 'package:my_moon/screens/analytics_screen.dart';
+import 'package:my_moon/services/navigation_service.dart';
 
 class BottomNavBar extends StatelessWidget {
   final int currentIndex;
@@ -37,20 +38,20 @@ class BottomNavBar extends StatelessWidget {
             _buildNavItem(
               context: context,
               index: 0,
-              onTap: () => _navigateToScreen(context, const HomeScreen()),
+              onTap: () => NavigationService.navigateAndSave(context, const HomeScreen(), '/home'),
               child: _buildCustomHomeIcon(currentIndex == 0),
             ),
             _buildNavItem(
               context: context,
               index: 1,
-              onTap: () => _navigateToScreen(context, const CalendarScreen()),
+              onTap: () => NavigationService.navigateAndSave(context, const CalendarScreen(), '/calendar'),
               child: _buildCustomCalendarIcon(currentIndex == 1),
             ),
             const SizedBox(width: 56), // Space for center FAB
             _buildNavItem(
               context: context,
               index: 2,
-              onTap: () => _navigateToScreen(context, const AnalyticsScreen()),
+              onTap: () => NavigationService.navigateAndSave(context, const AnalyticsScreen(), '/analytics'),
               child: Icon(
                 Icons.bar_chart_outlined,
                 color: currentIndex == 2 ? const Color(0xFFFF4D6D) : const Color(0xFFC4C4C4),
@@ -60,7 +61,7 @@ class BottomNavBar extends StatelessWidget {
             _buildNavItem(
               context: context,
               index: 3,
-              onTap: () => _navigateToScreen(context, const ProfileScreen()),
+              onTap: () => NavigationService.navigateAndSave(context, const ProfileScreen(), '/profile'),
               child: Icon(
                 Icons.person_outline,
                 color: currentIndex == 3 ? const Color(0xFFFF4D6D) : const Color(0xFFC4C4C4),
@@ -106,13 +107,6 @@ class BottomNavBar extends StatelessWidget {
       Icons.calendar_today_outlined,
       color: isActive ? const Color(0xFFFF4D6D) : const Color(0xFFC4C4C4),
       size: 24,
-    );
-  }
-
-  void _navigateToScreen(BuildContext context, Widget screen) {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => screen),
     );
   }
 }

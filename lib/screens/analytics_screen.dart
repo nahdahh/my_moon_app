@@ -3,6 +3,7 @@ import 'package:my_moon/screens/notification_screen.dart';
 import 'package:my_moon/screens/add_log_period_screen.dart';
 import 'package:my_moon/widgets/bottom_nav_bar.dart';
 import 'package:my_moon/services/analytics_service.dart';
+import 'package:my_moon/services/navigation_service.dart'; // Import NavigationService
 
 class AnalyticsScreen extends StatefulWidget {
   const AnalyticsScreen({Key? key}) : super(key: key);
@@ -20,6 +21,11 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
   @override
   void initState() {
     super.initState();
+    // Save current route when this screen is loaded
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      NavigationService.saveCurrentRoute('/analytics');
+      print("AnalyticsScreen: Route saved as /analytics");
+    });
     _loadAnalyticsData();
   }
   

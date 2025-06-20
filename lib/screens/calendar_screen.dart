@@ -27,7 +27,7 @@ List<DateTime> _predictedPeriodDays = [];
 List<DateTime> _fertileWindowDays = [];
 
 bool _isLoading = true;
-
+// Remove: String _userName = 'User';
 
 DateTime? _selectedDate;
 RecordModel? _selectedDateLog;
@@ -44,12 +44,19 @@ Map<String, String> _bodyConditionNames = {};
 void initState() {
   super.initState();
   _selectedMonth = DateTime.now();
-  _loadOptionNames();  
-  _loadPeriodData();   
-  
+  _loadOptionNames();  // Keep this
+  _loadPeriodData();   // Keep this
+  // Remove: _loadUserData();
 }
 
-
+// Remove: Future<void> _loadUserData() async {
+// Remove:   final user = _authService.getCurrentUser();
+// Remove:   if (user != null) {
+// Remove:     setState(() {
+// Remove:       _userName = user.data['name'] ?? 'User';
+// Remove:     });
+// Remove:   }
+// Remove: }
 
 Future<void> _loadOptionNames() async {
   try {
@@ -295,7 +302,7 @@ void _onDaySelected(DateTime day) {
 @override
 Widget build(BuildContext context) {
   return Scaffold(
-    backgroundColor: const Color(0xFFFF7FD), 
+    backgroundColor: const Color(0xFFF7FD), // Warna background yang konsisten
     appBar: AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,

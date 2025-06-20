@@ -7,6 +7,7 @@ import 'package:my_moon/screens/cycle_screen.dart';
 import 'package:my_moon/widgets/bottom_nav_bar.dart';
 import 'package:my_moon/services/auth_service.dart';
 import 'package:my_moon/screens/auth_screen.dart';
+import 'dart:io';
 import 'dart:typed_data';
 import 'package:image_picker/image_picker.dart';
 
@@ -207,6 +208,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Column(
             children: [
+              // Ganti header yang ada dengan struktur 3 kolom
               // Header
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20.0),
@@ -251,7 +253,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      // Kartu Profil dengan Enhanced Shadow
+                      // Kartu Profil
                       Container(
                         width: double.infinity,
                         padding: const EdgeInsets.all(32),
@@ -259,26 +261,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(24),
                           boxShadow: [
-                            // Main shadow untuk depth
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.08),
-                              blurRadius: 24,
-                              offset: const Offset(0, 8),
-                              spreadRadius: 0,
-                            ),
-                            // Secondary shadow untuk ambient light effect
                             BoxShadow(
                               color: Colors.black.withOpacity(0.04),
-                              blurRadius: 6,
-                              offset: const Offset(0, 2),
-                              spreadRadius: 0,
+                              blurRadius: 20,
+                              offset: const Offset(0, 4),
                             ),
                           ],
-                          // Optional: tambahkan border subtle untuk definisi yang lebih baik
-                          border: Border.all(
-                            color: Colors.grey.withOpacity(0.05),
-                            width: 1,
-                          ),
                         ),
                         child: Column(
                           children: [
@@ -293,14 +281,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
                                       color: Colors.grey[100],
-                                      // Tambahkan shadow pada foto profil juga
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withOpacity(0.06),
-                                          blurRadius: 12,
-                                          offset: const Offset(0, 4),
-                                        ),
-                                      ],
                                     ),
                                     child: ClipOval(
                                       child: _imageBytes != null 
