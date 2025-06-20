@@ -29,10 +29,10 @@ class WeekCalendarWidget extends StatelessWidget {
       return startOfWeek.add(Duration(days: index));
     });
     
-    // Pastikan semua tanggal valid
-    final validPeriodDays = periodDays.where((date) => date != null).toList();
-    final validPredictedPeriodDays = predictedPeriodDays.where((date) => date != null).toList();
-    final validFertileWindowDays = fertileWindowDays.where((date) => date != null).toList();
+    // Gunakan data tanggal langsung karena sudah non-nullable
+    final validPeriodDays = periodDays;
+    final validPredictedPeriodDays = predictedPeriodDays;
+    final validFertileWindowDays = fertileWindowDays;
     
     final dayLabels = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
     

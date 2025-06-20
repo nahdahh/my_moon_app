@@ -31,7 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int _averageCycleLength = 28;
   int _daysSinceLastPeriod = 0;
   int _daysUntilNextPeriod = 0;
-  bool _hasActualData = false;
+  bool _hasActualData = false; // Status apakah data periode sudah tersedia
   
   List<DateTime> _periodDays = [];
   List<DateTime> _predictedPeriodDays = [];
@@ -280,11 +280,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                     borderRadius: BorderRadius.circular(25),
                                   ),
                                   child: Text(
-                                    _daysUntilNextPeriod > 0
-                                        ? 'Period Start in $_daysUntilNextPeriod Day'
-                                        : _daysUntilNextPeriod == 0
-                                            ? 'Period Starts Today'
-                                            : 'Period Started ${-_daysUntilNextPeriod} Days Ago',
+                                    // Menggunakan _hasActualData untuk menampilkan pesan yang sesuai
+                                    _hasActualData 
+                                        ? (_daysUntilNextPeriod > 0
+                                            ? 'Period Start in $_daysUntilNextPeriod Day'
+                                            : _daysUntilNextPeriod == 0
+                                                ? 'Period Starts Today'
+                                                : 'Period Started ${-_daysUntilNextPeriod} Days Ago')
+                                        : 'Set your first period date',
                                     style: const TextStyle(
                                       fontFamily: 'Poppins',
                                       fontSize: 14,
@@ -331,31 +334,72 @@ class _HomeScreenState extends State<HomeScreen> {
                       
                       const SizedBox(height: 20),
                       
-                      // Period info cards
-                      _buildInfoCard(
-                        icon: Icons.access_time_outlined,
-                        iconColor: const Color(0xFFFF2D55), // Icon color sesuai spesifikasi
-                        title: 'Started $lastPeriodDateFormatted',
-                        subtitle: '$_daysSinceLastPeriod days ago',
-                      ),
-                      
-                      const SizedBox(height: 16),
-                      
-                      _buildInfoCard(
-                        icon: Icons.water_drop_outlined,
-                        iconColor: const Color(0xFFFF2D55),
-                        title: 'Period Length: $_lastPeriodDuration days',
-                        subtitle: 'Normal',
-                      ),
-                      
-                      const SizedBox(height: 16),
-                      
-                      _buildInfoCard(
-                        icon: Icons.refresh_outlined,
-                        iconColor: const Color(0xFFFF2D55),
-                        title: 'Cycle Length: $_averageCycleLength days',
-                        subtitle: 'Normal',
-                      ),
+                      // Period info cards - tampilkan hanya jika ada data aktual
+                      if (_hasActualData) ...[
+                        _buildInfoCard(
+                          icon: Icons.access_time_outlined,
+                          iconColor: const Color(0xFFFF2D55), // Icon color sesuai spesifikasi
+                          title: 'Started $lastPeriodDateFormatted',
+                          subtitle: '$_daysSinceLastPeriod days ago',
+                        ),
+                        
+                        const SizedBox(height: 16),
+                        
+                        _buildInfoCard(
+                          icon: Icons.water_drop_outlined,
+                          iconColor: const Color(0xFFFF2D55),
+                          title: 'Period Length: $_lastPeriodDuration days',
+                          subtitle: 'Normal',
+                        ),
+                        
+                        const SizedBox(height: 16),
+                        
+                        _buildInfoCard(
+                          icon: Icons.refresh_outlined,
+                          iconColor: const Color(0xFFFF2D55),
+                          title: 'Cycle Length: $_averageCycleLength days',
+                          subtitle: 'Normal',
+                        ),
+                      ] else ...[
+                        // Tampilkan pesan jika belum ada data periode
+                        Container(
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade100,
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: const Column(
+                            children: [
+                              Icon(
+                                Icons.info_outline,
+                                size: 48,
+                                color: Colors.grey,
+                              ),
+                              SizedBox(height: 12),
+                              Text(
+                                'No period data yet',
+                                style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              SizedBox(height: 4),
+                              Text(
+                                'Tap the + button to add your first period log',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontFamily: 'Poppins',
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                       
                       const SizedBox(height: 100), // Space for bottom navigation
                     ],
@@ -382,18 +426,18 @@ class _HomeScreenState extends State<HomeScreen> {
   }
   
   Widget _buildWeekCalendar() {
-  return WeekCalendarWidget(
-    currentDate: _now,
-    selectedDate: null, // No specific selected date for home screen
-    periodDays: _periodDays,
-    predictedPeriodDays: _predictedPeriodDays,
-    fertileWindowDays: _fertileWindowDays,
-    onDaySelected: (date) {
-      // Optional: Handle day selection if needed
-      print('Day selected: ${DateFormat('yyyy-MM-dd').format(date)}');
-    },
-  );
-}
+    return WeekCalendarWidget(
+      currentDate: _now,
+      selectedDate: null, // No specific selected date for home screen
+      periodDays: _periodDays,
+      predictedPeriodDays: _predictedPeriodDays,
+      fertileWindowDays: _fertileWindowDays,
+      onDaySelected: (date) {
+        // Optional: Handle day selection if needed
+        print('Day selected: ${DateFormat('yyyy-MM-dd').format(date)}');
+      },
+    );
+  }
   
   Widget _buildInfoCard({
     required IconData icon,

@@ -3,7 +3,7 @@ import 'package:my_moon/widgets/week_calendar_widget.dart';
 import 'package:my_moon/services/period_log_service.dart';
 import 'package:my_moon/services/auth_service.dart';
 import 'package:intl/intl.dart';
-import 'package:pocketbase/pocketbase.dart';
+
 
 class AddLogPeriodScreen extends StatefulWidget {
   const AddLogPeriodScreen({Key? key}) : super(key: key);
@@ -25,14 +25,11 @@ class _AddLogPeriodScreenState extends State<AddLogPeriodScreen> {
   bool _isSaving = false;
   bool _isLoading = true;
 
-  // Data from PocketBase
+  // Data dari PocketBase
   List<Map<String, dynamic>> _flowOptions = [];
   List<Map<String, dynamic>> _moodOptions = [];
   List<Map<String, dynamic>> _crampOptions = [];
   List<Map<String, dynamic>> _bodyConditionOptions = [];
-
-  // Existing log data
-  RecordModel? _existingLog;
 
   @override
   void initState() {
@@ -52,7 +49,7 @@ class _AddLogPeriodScreenState extends State<AddLogPeriodScreen> {
     });
     
     try {
-      // Load options from PocketBase
+      // Muat opsi dari PocketBase
       final flows = await _periodLogService.getFlows();
       final moods = await _periodLogService.getMoods();
       final cramps = await _periodLogService.getCramps();
@@ -67,7 +64,7 @@ class _AddLogPeriodScreenState extends State<AddLogPeriodScreen> {
       
       print("Loaded ${flows.length} flows, ${moods.length} moods, ${cramps.length} cramps, ${bodyConditions.length} body conditions");
       
-      // Check if there's already a log for this date
+      // Cek apakah sudah ada log untuk tanggal ini
       await _checkExistingLog();
     } catch (e) {
       print("Error loading data: $e");
@@ -88,8 +85,6 @@ class _AddLogPeriodScreenState extends State<AddLogPeriodScreen> {
     try {
       final existingLog = await _periodLogService.getLogForDate(_selectedDate, user.id);
       setState(() {
-        _existingLog = existingLog;
-        
         if (existingLog != null) {
           _selectedFlow = existingLog.data['flow'];
           _selectedMood = existingLog.data['mood'];
@@ -97,7 +92,7 @@ class _AddLogPeriodScreenState extends State<AddLogPeriodScreen> {
           _selectedBodyCondition = existingLog.data['body_condition'];
           _noteController.text = existingLog.data['note'] ?? '';
         } else {
-          // Reset form if no existing log
+          // Reset form jika tidak ada log
           _selectedFlow = null;
           _selectedMood = null;
           _selectedCramp = null;
@@ -107,9 +102,8 @@ class _AddLogPeriodScreenState extends State<AddLogPeriodScreen> {
       });
     } catch (e) {
       print("Error checking existing log: $e");
-      // Reset form on error
+      // Reset form jika ada error
       setState(() {
-        _existingLog = null;
         _selectedFlow = null;
         _selectedMood = null;
         _selectedCramp = null;
@@ -211,7 +205,7 @@ class _AddLogPeriodScreenState extends State<AddLogPeriodScreen> {
 
   void _nextWeek() {
     final nextWeek = _currentWeekDate.add(const Duration(days: 7));
-    // Don't allow going to future weeks
+    // Jangan izinkan ke minggu mendatang
     if (nextWeek.isBefore(DateTime.now().add(const Duration(days: 7)))) {
       setState(() {
         _currentWeekDate = nextWeek;
@@ -228,14 +222,14 @@ class _AddLogPeriodScreenState extends State<AddLogPeriodScreen> {
 
   @override
   Widget build(BuildContext context) {
-  // Example period data for the calendar
+  // Contoh data periode untuk kalender
   final List<DateTime> periodDays = [_selectedDate];
   final List<DateTime> predictedPeriodDays = <DateTime>[];
   final List<DateTime> fertileWindowDays = <DateTime>[];
 
   return Scaffold(
     body: Container(
-      color: const Color(0xFFFFF7FD), // Updated background color
+      color: const Color(0xFFFFF7FD), // Warna background yang diperbarui
       child: SafeArea(
         child: Column(
           children: [
@@ -244,7 +238,7 @@ class _AddLogPeriodScreenState extends State<AddLogPeriodScreen> {
               padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
-                  // Top row with back button and centered title
+                  // Baris atas dengan tombol kembali dan judul tengah
                   Row(
                     children: [
                       IconButton(
@@ -264,11 +258,11 @@ class _AddLogPeriodScreenState extends State<AddLogPeriodScreen> {
                           ),
                         ),
                       ),
-                      const SizedBox(width: 48), // Placeholder to balance the back button
+                      const SizedBox(width: 48), // Placeholder untuk menyeimbangkan tombol kembali
                     ],
                   ),
-                  const SizedBox(height: 12), // Spacing between title and calendar button
-                  // Calendar button row
+                  const SizedBox(height: 12), // Jarak antara judul dan tombol kalender
+                  // Baris tombol kalender
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
@@ -324,10 +318,10 @@ class _AddLogPeriodScreenState extends State<AddLogPeriodScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // Week Navigation and Calendar - No background container
+                            // Navigasi Minggu dan Kalender - Tanpa container background
                             Column(
                               children: [
-                                // Week Navigation Header
+                                // Header Navigasi Minggu
                                 Padding(
                                   padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
                                   child: Row(
@@ -356,7 +350,7 @@ class _AddLogPeriodScreenState extends State<AddLogPeriodScreen> {
                                   ),
                                 ),
                                 
-                                // Week Calendar - transparent background
+                                // Kalender Minggu - background transparan
                                 WeekCalendarWidget(
                                   currentDate: _currentWeekDate,
                                   selectedDate: _selectedDate,
@@ -429,7 +423,7 @@ class _AddLogPeriodScreenState extends State<AddLogPeriodScreen> {
                                   isSelected: _selectedMood == moodId,
                                   onToggle: (selected) {
                                     setState(() {
-                                      // Since mood is a single relation, we just set or clear it
+                                      // Karena mood adalah relasi tunggal, kita hanya set atau hapus
                                       _selectedMood = selected ? moodId : null;
                                     });
                                   },
@@ -499,7 +493,7 @@ class _AddLogPeriodScreenState extends State<AddLogPeriodScreen> {
                                   isSelected: _selectedBodyCondition == conditionId,
                                   onToggle: (selected) {
                                     setState(() {
-                                      // Since body_condition is a single relation, we just set or clear it
+                                      // Karena body_condition adalah relasi tunggal, kita hanya set atau hapus
                                       _selectedBodyCondition = selected ? conditionId : null;
                                     });
                                   },
@@ -551,7 +545,7 @@ class _AddLogPeriodScreenState extends State<AddLogPeriodScreen> {
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 80), // Space for bottom navigation
+                            const SizedBox(height: 80), // Ruang untuk navigasi bawah
                           ],
                         ),
                       ),
@@ -681,7 +675,7 @@ class _SymptomOptionState extends State<SymptomOption> {
     );
   }
   
-  // Default: empty circle with icon
+  // Default: lingkaran kosong dengan ikon
   return Icon(
     Icons.circle_outlined,
     color: widget.isSelected ? Colors.white : widget.color,

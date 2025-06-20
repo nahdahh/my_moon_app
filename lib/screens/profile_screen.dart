@@ -7,7 +7,6 @@ import 'package:my_moon/screens/cycle_screen.dart';
 import 'package:my_moon/widgets/bottom_nav_bar.dart';
 import 'package:my_moon/services/auth_service.dart';
 import 'package:my_moon/screens/auth_screen.dart';
-import 'dart:io';
 import 'dart:typed_data';
 import 'package:image_picker/image_picker.dart';
 
@@ -21,14 +20,12 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final AuthService _authService = AuthService();
   final ImagePicker _picker = ImagePicker();
-  File? _imageFile;
   Uint8List? _imageBytes;
   String? _imageName;
   bool _isLoading = false;
 
   String _userName = 'User';
   String _userEmail = 'user@example.com';
-  String? _userBirthDate;
   String? _profileImageUrl;
 
   @override
@@ -43,11 +40,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
       setState(() {
         _userName = user.data['name'] ?? 'User';
         _userEmail = user.data['email'] ?? 'user@example.com';
-        _userBirthDate = user.data['birth_date'];
         
-        // Get the profile image URL from PocketBase
+        // Dapatkan URL gambar profil dari PocketBase
         if (user.data['photo_profile'] != null && user.data['photo_profile'] != '') {
-          // Construct the full URL to the profile image
+          // Buat URL lengkap untuk gambar profil
           final String baseUrl = 'http://127.0.0.1:8090';
           final String collectionId = 'users';
           final String recordId = user.id;
@@ -66,11 +62,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     try {
       final XFile? pickedFile = await _picker.pickImage(
         source: ImageSource.gallery,
-        imageQuality: 70, // Reduce image quality to save space
+        imageQuality: 70, // Kurangi kualitas gambar untuk menghemat ruang
       );
       
       if (pickedFile != null) {
-        // Read the file as bytes to avoid path issues
+        // Baca file sebagai bytes untuk menghindari masalah path
         final bytes = await pickedFile.readAsBytes();
         final fileName = pickedFile.name;
         
@@ -80,7 +76,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           print("Image picked: $fileName (${bytes.length} bytes)");
         });
         
-        // Update the profile image
+        // Perbarui gambar profil
         await _updateProfileImage();
       }
     } catch (e) {
@@ -101,12 +97,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     try {
       print("Starting profile image update...");
       
-      // Use the method that accepts bytes directly
+      // Gunakan method yang menerima bytes langsung
       final success = await _authService.updateProfilePhoto(_imageBytes!, _imageName!);
       
       if (success) {
         print("Profile image updated successfully");
-        // Reload user data to get the updated profile image URL
+        // Muat ulang data user untuk mendapatkan URL gambar profil yang diperbarui
         _loadUserData();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Profile image updated successfully')),
@@ -125,8 +121,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     } finally {
       setState(() {
         _isLoading = false;
-        _imageBytes = null; // Clear the image bytes after upload attempt
-        _imageName = null; // Clear the image name after upload attempt
+        _imageBytes = null; // Bersihkan image bytes setelah percobaan upload
+        _imageName = null; // Bersihkan nama gambar setelah percobaan upload
       });
     }
   }
@@ -217,10 +213,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 padding: const EdgeInsets.symmetric(vertical: 20.0),
                 child: Row(
                   children: [
-                    // Left: Empty placeholder
+                    // Kiri: Placeholder kosong
                     const SizedBox(width: 48),
                     
-                    // Center: Profile text
+                    // Tengah: Teks Profile
                     Expanded(
                       child: Text(
                         'Profile',
@@ -234,7 +230,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
                     
-                    // Right: Notification icon
+                    // Kanan: Icon notifikasi
                     IconButton(
                       icon: const Icon(
                         Icons.notifications_outlined,
@@ -256,7 +252,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      // Profile Card
+                      // Kartu Profil
                       Container(
                         width: double.infinity,
                         padding: const EdgeInsets.all(32),
@@ -273,7 +269,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         child: Column(
                           children: [
-                            // Profile Photo
+                            // Foto Profil
                             GestureDetector(
                               onTap: _pickImage,
                               child: Stack(
@@ -350,7 +346,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                             const SizedBox(height: 16),
                             
-                            // User Name
+                            // Nama User
                             Text(
                               _userName,
                               style: const TextStyle(
@@ -362,7 +358,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                             const SizedBox(height: 4),
                             
-                            // User Email
+                            // Email User
                             Text(
                               _userEmail,
                               style: const TextStyle(
@@ -378,7 +374,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       
                       const SizedBox(height: 32),
                       
-                      // Menu List
+                      // Daftar Menu
                       _buildMenuItem(
                         icon: Icons.refresh,
                         title: 'My Cycle',
