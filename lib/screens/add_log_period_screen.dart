@@ -229,7 +229,7 @@ class _AddLogPeriodScreenState extends State<AddLogPeriodScreen> {
 
   return Scaffold(
     body: Container(
-      color: const Color(0xFFFFF7FD), // Warna background yang diperbarui
+      color: const Color(0xFFF7FD), // Warna background yang diperbarui
       child: SafeArea(
         child: Column(
           children: [

@@ -198,7 +198,7 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        color: const Color(0xFFFFF7FD), // Light pink background
+        color: const Color(0xFFFF7FD), // Light pink background
         child: SafeArea(
           child: Column(
             children: [

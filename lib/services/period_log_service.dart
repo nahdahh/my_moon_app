@@ -1,16 +1,13 @@
 import 'package:pocketbase/pocketbase.dart';
 import 'package:my_moon/services/auth_service.dart';
-import 'package:flutter/material.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 
 class PeriodLogService {
   final AuthService _authService = AuthService();
   
-  // Get all flows from the flows collection
+  // Ambil semua data flow dari koleksi flows
   Future<List<Map<String, dynamic>>> getFlows() async {
     try {
-      // Make sure we're authenticated
+      // Pastikan user sudah login
       final user = _authService.getCurrentUser();
       if (user == null) {
         print("Cannot fetch flows: User not logged in");
@@ -19,19 +16,19 @@ class PeriodLogService {
       
       print("Fetching flows from PocketBase...");
       
-      // Try to get the flows directly from PocketBase
+      // Coba ambil data flows langsung dari PocketBase
       final records = await pb.collection('flows').getFullList();
       print("Successfully fetched ${records.length} flows");
       
-      // If no records found, check if the collection exists
+      // Jika tidak ada data, cek apakah koleksi ada
       if (records.isEmpty) {
         try {
-          // Try to get collection info to check if it exists
+          // Coba ambil info koleksi untuk cek keberadaan
           await pb.collections.getOne('flows');
           print("Flows collection exists but is empty");
         } catch (e) {
           print("Error checking flows collection: $e");
-          // Return some default data if collection doesn't exist or has issues
+          // Return data default jika koleksi tidak ada atau bermasalah
           return [
             {'id': 'default1', 'name': 'Light', 'iconUrl': null},
             {'id': 'default2', 'name': 'Medium', 'iconUrl': null},
@@ -40,15 +37,15 @@ class PeriodLogService {
         }
       }
       
-      // Convert RecordModel objects to Maps
+      // Konversi objek RecordModel ke Maps
       final List<Map<String, dynamic>> result = [];
       for (var record in records) {
         final map = Map<String, dynamic>.from(record.data);
-        map['id'] = record.id; // Add the ID to the map
+        map['id'] = record.id; // Tambahkan ID ke map
         
-        // Add image URL if icon exists
+        // Tambahkan URL gambar jika icon ada
         if (map['icon'] != null && map['icon'].toString().isNotEmpty) {
-          // Construct the full URL to the icon image
+          // Buat URL lengkap untuk gambar icon
           final String baseUrl = 'http://127.0.0.1:8090';
           final String collectionId = 'flows';
           final String recordId = record.id;
@@ -60,7 +57,7 @@ class PeriodLogService {
         result.add(map);
       }
       
-      // If no records were found, return default data
+      // Jika tidak ada data ditemukan, return data default
       if (result.isEmpty) {
         return [
           {'id': 'default1', 'name': 'Light', 'iconUrl': null},
@@ -72,7 +69,7 @@ class PeriodLogService {
       return result;
     } catch (e) {
       print("Error fetching flows: $e");
-      // Return default data on error
+      // Return data default jika error
       return [
         {'id': 'default1', 'name': 'Light', 'iconUrl': null},
         {'id': 'default2', 'name': 'Medium', 'iconUrl': null},
@@ -81,10 +78,10 @@ class PeriodLogService {
     }
   }
 
-  // Get all moods from the moods collection
+  // Ambil semua data mood dari koleksi moods
   Future<List<Map<String, dynamic>>> getMoods() async {
     try {
-      // Make sure we're authenticated
+      // Pastikan user sudah login
       final user = _authService.getCurrentUser();
       if (user == null) {
         print("Cannot fetch moods: User not logged in");
@@ -115,11 +112,11 @@ class PeriodLogService {
         }
       }
       
-      // Convert RecordModel objects to Maps
+      // Konversi objek RecordModel ke Maps
       final List<Map<String, dynamic>> result = [];
       for (var record in records) {
         final map = Map<String, dynamic>.from(record.data);
-        map['id'] = record.id; // Add the ID to the map
+        map['id'] = record.id; // Tambahkan ID ke map
         
         // Handle icon field (should be a single string based on schema)
         if (map['icon'] != null && map['icon'].toString().isNotEmpty) {
@@ -134,7 +131,7 @@ class PeriodLogService {
         result.add(map);
       }
       
-      // If no records were found, return default data
+      // Jika tidak ada data ditemukan, return data default
       if (result.isEmpty) {
         return [
           {'id': 'default1', 'name': 'Happy', 'iconUrl': null},
@@ -147,7 +144,7 @@ class PeriodLogService {
       return result;
     } catch (e) {
       print("Error fetching moods: $e");
-      // Return default data on error
+      // Return data default jika error
       return [
         {'id': 'default1', 'name': 'Happy', 'iconUrl': null},
         {'id': 'default2', 'name': 'Sad', 'iconUrl': null},
@@ -157,10 +154,10 @@ class PeriodLogService {
     }
   }
 
-  // Get all cramps from the cramps collection
+  // Ambil semua data cramps dari koleksi cramps
   Future<List<Map<String, dynamic>>> getCramps() async {
     try {
-      // Make sure we're authenticated
+      // Pastikan user sudah login
       final user = _authService.getCurrentUser();
       if (user == null) {
         print("Cannot fetch cramps: User not logged in");
@@ -173,7 +170,7 @@ class PeriodLogService {
       final records = await pb.collection('cramps').getFullList();
       print("Successfully fetched ${records.length} cramps");
       
-      // If no records found, check if the collection exists
+      // Jika tidak ada data, cek apakah koleksi ada
       if (records.isEmpty) {
         try {
           // Try to get collection info to check if it exists
@@ -191,15 +188,15 @@ class PeriodLogService {
         }
       }
       
-      // Convert RecordModel objects to Maps
+      // Konversi objek RecordModel ke Maps
       final List<Map<String, dynamic>> result = [];
       for (var record in records) {
         final map = Map<String, dynamic>.from(record.data);
-        map['id'] = record.id; // Add the ID to the map
+        map['id'] = record.id; // Tambahkan ID ke map
         
-        // Add image URL if icon exists
+        // Tambahkan URL gambar jika icon ada
         if (map['icon'] != null && map['icon'].toString().isNotEmpty) {
-          // Construct the full URL to the icon image
+          // Buat URL lengkap untuk gambar icon
           final String baseUrl = 'http://127.0.0.1:8090';
           final String collectionId = 'cramps';
           final String recordId = record.id;
@@ -211,7 +208,7 @@ class PeriodLogService {
         result.add(map);
       }
       
-      // If no records were found, return default data
+      // Jika tidak ada data ditemukan, return data default
       if (result.isEmpty) {
         return [
           {'id': 'default1', 'name': 'None', 'iconUrl': null},
@@ -224,7 +221,7 @@ class PeriodLogService {
       return result;
     } catch (e) {
       print("Error fetching cramps: $e");
-      // Return default data on error
+      // Return data default jika error
       return [
         {'id': 'default1', 'name': 'None', 'iconUrl': null},
         {'id': 'default2', 'name': 'Mild', 'iconUrl': null},
@@ -234,10 +231,10 @@ class PeriodLogService {
     }
   }
 
-  // Get all body conditions from the body_conditions collection
+  // Ambil semua data kondisi tubuh dari koleksi body_conditions
   Future<List<Map<String, dynamic>>> getBodyConditions() async {
     try {
-      // Make sure we're authenticated
+      // Pastikan user sudah login
       final user = _authService.getCurrentUser();
       if (user == null) {
         print("Cannot fetch body conditions: User not logged in");
@@ -250,7 +247,7 @@ class PeriodLogService {
       final records = await pb.collection('body_conditions').getFullList();
       print("Successfully fetched ${records.length} body conditions");
       
-      // If no records found, check if the collection exists
+      // Jika tidak ada data, cek apakah koleksi ada
       if (records.isEmpty) {
         try {
           // Try to get collection info to check if it exists
@@ -268,11 +265,11 @@ class PeriodLogService {
         }
       }
       
-      // Convert RecordModel objects to Maps
+      // Konversi objek RecordModel ke Maps
       final List<Map<String, dynamic>> result = [];
       for (var record in records) {
         final map = Map<String, dynamic>.from(record.data);
-        map['id'] = record.id; // Add the ID to the map
+        map['id'] = record.id; // Tambahkan ID ke map
         
         // Handle icon field (should be a single string based on schema)
         if (map['icon'] != null && map['icon'].toString().isNotEmpty) {
@@ -287,7 +284,7 @@ class PeriodLogService {
         result.add(map);
       }
       
-      // If no records were found, return default data
+      // Jika tidak ada data ditemukan, return data default
       if (result.isEmpty) {
         return [
           {'id': 'default1', 'name': 'Headache', 'iconUrl': null},
@@ -300,7 +297,7 @@ class PeriodLogService {
       return result;
     } catch (e) {
       print("Error fetching body conditions: $e");
-      // Return default data on error
+      // Return data default jika error
       return [
         {'id': 'default1', 'name': 'Headache', 'iconUrl': null},
         {'id': 'default2', 'name': 'Backache', 'iconUrl': null},
@@ -310,7 +307,7 @@ class PeriodLogService {
     }
   }
 
-  // Log a menstruation period
+  // Catat periode menstruasi
   Future<bool> logMenstruation({
     required DateTime date,
     required String userId,
@@ -321,23 +318,23 @@ class PeriodLogService {
     String? note,
   }) async {
     try {
-      // Make sure we're authenticated
+      // Pastikan user sudah login
       final user = _authService.getCurrentUser();
       if (user == null) {
         print("Cannot log menstruation: User not logged in");
         return false;
       }
       
-      // Format date as YYYY-MM-DD
+      // Format tanggal sebagai YYYY-MM-DD
       final formattedDate = "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
 
-      // Create the log entry
+      // Buat entri log
       final data = {
         "date_menstruation": formattedDate,
         "id_user": userId,
       };
       
-      // Add optional fields only if they have values
+      // Tambahkan field opsional hanya jika ada nilainya
       if (flow != null && flow.isNotEmpty) data["flow"] = flow;
       if (cramp != null && cramp.isNotEmpty) data["cramp"] = cramp;
       if (mood != null && mood.isNotEmpty) data["mood"] = mood;
@@ -346,18 +343,18 @@ class PeriodLogService {
 
       print("Creating log entry with data: $data");
       
-      // Check if a log already exists for this date and user
+      // Cek apakah log sudah ada untuk tanggal dan user ini
       try {
         final existingLog = await getLogForDate(date, userId);
         
         if (existingLog != null) {
-          // Update existing log
+          // Update log yang sudah ada
           print("Updating existing log: ${existingLog.id}");
           await pb.collection('log_menstruation').update(existingLog.id, body: data);
           print("Successfully updated log");
           return true;
         } else {
-          // Create new log
+          // Buat log baru
           print("Creating new log");
           final result = await pb.collection('log_menstruation').create(body: data);
           print("Successfully created log with ID: ${result.id}");
@@ -366,7 +363,7 @@ class PeriodLogService {
       } catch (e) {
         print("Error checking for existing log: $e");
         
-        // Try to create a new log anyway
+        // Coba buat log baru saja
         try {
           print("Attempting to create log directly");
           final result = await pb.collection('log_menstruation').create(body: data);
@@ -375,7 +372,7 @@ class PeriodLogService {
         } catch (createError) {
           print("Error creating log: $createError");
           
-          // Try to debug the issue
+          // Coba debug masalahnya
           if (createError.toString().contains("400")) {
             print("Bad request error. Here's the data being sent:");
             data.forEach((key, value) {
@@ -392,10 +389,10 @@ class PeriodLogService {
     }
   }
 
-  // Delete a menstruation log
+  // Hapus log menstruasi
   Future<bool> deleteMenstruationLog(String logId) async {
     try {
-      // Make sure we're authenticated
+      // Pastikan user sudah login
       final user = _authService.getCurrentUser();
       if (user == null) {
         print("Cannot delete log: User not logged in");
@@ -404,7 +401,7 @@ class PeriodLogService {
       
       print("Deleting log with ID: $logId");
       
-      // Delete the log from PocketBase
+      // Hapus log dari PocketBase
       await pb.collection('log_menstruation').delete(logId);
       
       print("Successfully deleted log");
@@ -415,24 +412,24 @@ class PeriodLogService {
     }
   }
 
-  // Get logs for a specific date - IMPROVED VERSION
+  // Ambil log untuk tanggal tertentu - VERSI DIPERBAIKI
   Future<RecordModel?> getLogForDate(DateTime date, String userId) async {
     try {
-      // Make sure we're authenticated
+      // Pastikan user sudah login
       final user = _authService.getCurrentUser();
       if (user == null) {
         print("Cannot get log for date: User not logged in");
         return null;
       }
       
-      // Format date as YYYY-MM-DD
+      // Format tanggal sebagai YYYY-MM-DD
       final formattedDate = "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
       
       print("=== DEBUG: Searching for log ===");
       print("Formatted date: $formattedDate");
       print("User ID: $userId");
       
-      // First, let's get all logs for this user to see what's in the database
+      // Pertama, ambil semua log user ini untuk lihat apa yang ada di database
       final allLogs = await pb.collection('log_menstruation').getFullList(
         filter: 'id_user = "$userId"',
       );
@@ -442,7 +439,7 @@ class PeriodLogService {
         print("- Log ID: ${log.id}, Date: ${log.data['date_menstruation']}, User: ${log.data['id_user']}");
       }
       
-      // Now search for the specific date
+      // Sekarang cari tanggal spesifik
       final records = await pb.collection('log_menstruation').getList(
         filter: 'date_menstruation = "$formattedDate" && id_user = "$userId"',
         perPage: 1,
@@ -453,15 +450,15 @@ class PeriodLogService {
       if (records.items.isEmpty) {
         print("No log found for date: $formattedDate");
         
-        // Try alternative search methods
+        // Coba metode pencarian alternatif
         print("Trying alternative search...");
         
-        // Search with just the date part
+        // Cari dengan bagian tanggal saja
         final alternativeRecords = await pb.collection('log_menstruation').getFullList(
           filter: 'id_user = "$userId"',
         );
         
-        // Filter manually to find matching date
+        // Filter manual untuk cari tanggal yang cocok
         for (var record in alternativeRecords) {
           final recordDate = record.data['date_menstruation'];
           print("Comparing: '$recordDate' with '$formattedDate'");
@@ -471,7 +468,7 @@ class PeriodLogService {
             return record;
           }
           
-          // Also try parsing the date and comparing
+          // Coba juga parsing tanggal dan bandingkan
           try {
             final parsedRecordDate = DateTime.parse(recordDate);
             if (parsedRecordDate.year == date.year && 
@@ -496,10 +493,10 @@ class PeriodLogService {
     }
   }
 
-  // Get all logs for a user
+  // Ambil semua log untuk seorang user
   Future<List<RecordModel>> getAllLogsForUser(String userId) async {
     try {
-      // Make sure we're authenticated
+      // Pastikan user sudah login
       final user = _authService.getCurrentUser();
       if (user == null) {
         print("Cannot get logs for user: User not logged in");

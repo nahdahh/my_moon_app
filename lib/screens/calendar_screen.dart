@@ -27,7 +27,7 @@ List<DateTime> _predictedPeriodDays = [];
 List<DateTime> _fertileWindowDays = [];
 
 bool _isLoading = true;
-// Remove: String _userName = 'User';
+
 
 DateTime? _selectedDate;
 RecordModel? _selectedDateLog;
@@ -295,7 +295,7 @@ void _onDaySelected(DateTime day) {
 @override
 Widget build(BuildContext context) {
   return Scaffold(
-    backgroundColor: const Color(0xFFFFF7FD), // Updated background color
+    backgroundColor: const Color(0xFFFF7FD), 
     appBar: AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0,

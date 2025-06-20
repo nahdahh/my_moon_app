@@ -173,7 +173,7 @@ class _HomeScreenState extends State<HomeScreen> {
         : 'Not set';
     
     return Scaffold(
-      backgroundColor: const Color(0xFFF7FD), 
+      backgroundColor: const Color(0xFFFF7FD), 
       body: _isLoading 
           ? const Center(
               child: CircularProgressIndicator(

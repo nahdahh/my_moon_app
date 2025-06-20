@@ -48,7 +48,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF7FD),
+      backgroundColor: const Color(0xFFFF7FD),
       appBar: null,
       body: _isLoading
           ? const Center(

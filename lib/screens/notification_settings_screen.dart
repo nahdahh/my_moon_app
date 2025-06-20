@@ -96,7 +96,7 @@ class _NotificationSettingsScreenState extends State<NotificationSettingsScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF7FD),
+      backgroundColor: const Color(0xFFFF7FD),
       body: SafeArea(
         child: Column(
           children: [
